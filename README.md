@@ -1,4 +1,4 @@
-# OS_Lab4
+# OS Lab 4: Signaling with multi-process and multi-threaded programs
 
 Signaling with multi-process and multi-threaded programs
 

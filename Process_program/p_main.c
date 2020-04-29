@@ -1,3 +1,7 @@
+// Tyler Powell
+// Lab 4: Signaling with multi-process and multi-threaded programs
+// MULTI-PROCESS PROGRAM
+
 #include <time.h>
 #include <sys/times.h>
 #include <stdint.h>	/* for uint64 definition */
@@ -14,7 +18,7 @@
 #include <pthread.h>
 
 // protos 
-void signal_gen();
+void signal_gen(int pid);
 void signal_handler(int sig);
 int randomGen(int min, int max);
 void sleep_random_interval(double min, double max);
@@ -83,15 +87,15 @@ int main(){
 		if(pid == -1) {
 			puts("Generation fork failed");
 		} else if (pid == 0) {
-			signal_gen();
+			signal_gen(pid);
 			exit(0);
 		} else {
             block_sigusrs(0);
 			gen_pids[i] = &pid;
+            waitpid(pid, NULL, 0);
 		}
 	}
 	for(int i = 0; i < 4; i++) {
-		pid = fork();
 		if(pid == -1) { 
 			puts("Handler fork failed");
 		} else if(pid == 0) { //child, handler
@@ -106,6 +110,7 @@ int main(){
 			exit(0);
 		} else { 
             handle_pids[i] = &pid;
+            waitpid(pid, NULL, 0);
 		}
     }
 	
@@ -117,6 +122,7 @@ int main(){
 		exit(0);						
 	} else { //parent, main process
 		reporter_id = &pid;
+        waitpid(pid, NULL, 0);
 	}
     // 
     // sleep(5);
@@ -124,9 +130,9 @@ int main(){
     exit(0);    
 }
 
-void signal_gen(){
+void signal_gen(int pid){
     int count = 0;
-    // sleep(1);
+    sleep(1);
     block_sigusrs(0);
     while(count < 10){
         // puts("Reached");
@@ -137,7 +143,7 @@ void signal_gen(){
         if(signalInd == 1){
             puts("Sending signal 1");
             block_sigusrs(1);
-            kill(0, SIGUSR1);
+            kill(pid, SIGUSR1);
             fflush(stdout);
             pthread_mutex_lock(&shmem->sigusr1_sent_mutex);
             shmem->sigusr1_sent_counter++; // need to init this in main
@@ -147,7 +153,7 @@ void signal_gen(){
         else if(signalInd == 0){
             puts("Sending signal 2");
             block_sigusrs(2);
-            kill(0, SIGUSR2);
+            kill(pid, SIGUSR2);
             fflush(stdout);
             // // puts("reached post sig 2");
             pthread_mutex_lock(&shmem->sigusr2_sent_mutex);

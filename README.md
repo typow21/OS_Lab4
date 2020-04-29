@@ -18,7 +18,15 @@ The 3 signal generating processes will execute in a loop sending out SIGUSR1 and
 This program runs until either 1) 30 seconds goes by or 2) 100,000 signals are sent. After the program runs you can see a more detailed report of your analytics. 
 
 
+**Multithread signaling**
+
+This program is nearly identical to the previous program. The only difference is that it is being made using threads instead of processes.
+
+
 **Testing**
 
 
-I plan to test these programs first by printing each report thoroughly and by looking for any inconsistancies/anomolies. 
+I plan to test these programs first by printing each report thoroughly and by looking for any inconsistancies/anomolies. After chekcing for any blatant errors I then plan to compare the results from both programs, once again checking for inconsistancies. If any are found I plan to add identical print statement throughout each program to further attempt to find the problem. After this process is done I should be able to clearly demonstrate that the program executes correctly. 
+
+
+Unfortunately I did not have time to execute my testing plan. But there it is none the less. :)
